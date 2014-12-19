@@ -20,24 +20,6 @@ import os.path
 import sys
 
 
-try:
-    from pygments import highlight
-    from pygments.lexers import get_lexer_by_name
-    from pygments.formatters import get_formatter_by_name
-
-    lexer = get_lexer_by_name('json')
-    formatter = get_formatter_by_name('terminal256')
-
-    def print_colorized(data, dst=sys.stdout):
-        if hasattr(dst, 'isatty') and dst.isatty():
-            print(highlight(data, lexer, formatter), end='', file=dst)
-        else:
-            print(data, file=dst)
-except ImportError as e:
-    def print_colorized(data, dst=sys.stdout):
-        print(data, file=dst)
-
-
 def show_version():
     """ Show version info and exit.
     """
@@ -76,6 +58,29 @@ def build_filters(filter_definitions):
     return _filter
 
 
+def get_printer(mode):
+    def printer(data):
+        print(data)
+
+    if mode in ('auto', 'always'):
+        try:
+            from pygments import highlight
+            from pygments.lexers import get_lexer_by_name
+            from pygments.formatters import get_formatter_by_name
+
+            if mode == 'always' or sys.stdout.isatty():
+                lexer = get_lexer_by_name('json')
+                formatter = get_formatter_by_name('terminal256')
+
+                def printer(data):
+                    print(highlight(data, lexer, formatter), end='', file=sys.stdout)
+        except ImportError as e:
+            if mode == 'always':
+                import warnings
+                warnings.warn('No pygments module available, cannot colorize output')
+
+    return printer
+
 def json_loads(data):
     try:
         return json.loads(data)
@@ -91,13 +96,14 @@ def main():
     p.add_argument('-v', '--version', action='store_true')
     p.add_argument('--sort-keys', action='store_true')
     p.add_argument('--indent', type=int)
-    # p.add_argument('-l', '--highlight', type=str)
+    p.add_argument('--color', type=str, choices=('auto', 'always', 'never'), default='auto')
     args = p.parse_args()
 
     if args.version:
         show_version()
 
     filters = build_filters(args.grep)
+    printer = get_printer(args.color)
 
     data = map(json_loads, sys.stdin)
     data = filter(filters, data)
@@ -107,7 +113,7 @@ def main():
 
     for line in data:
         line = json.dumps(line, sort_keys=args.sort_keys, indent=args.indent)
-        print_colorized(line)
+        printer(line)
 
 
 if __name__ == '__main__':
