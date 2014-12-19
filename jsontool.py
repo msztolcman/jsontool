@@ -21,7 +21,9 @@ import sys
 
 
 def show_version():
-    """ Show version info and exit.
+    """
+    Show version info and exit.
+    :return:
     """
 
     print('{0}: version {1}'.format(os.path.basename(sys.argv[0]), __version__))
@@ -29,6 +31,14 @@ def show_version():
 
 
 def build_filters(filter_definitions):
+    """
+    Build function to filter jsons.
+
+    Filter definitions is a list of strings in format: key:value[:modifier]
+
+    :param filter_definitions: list of strings
+    :return: function
+    """
     filters = []
 
     if not filter_definitions:
@@ -58,7 +68,14 @@ def build_filters(filter_definitions):
     return _filter
 
 
-def get_printer(mode):
+def get_printer(mode='auto'):
+    """
+    Generate printer function.
+
+    :param mode: string: always, never or auto
+    :return:
+    """
+
     def printer(data):
         print(data)
 
@@ -81,7 +98,15 @@ def get_printer(mode):
 
     return printer
 
+
 def json_loads(data):
+    """
+    Safely convert data to json (do not throw an exception on fail)
+
+    :param data:
+    :return: parsed json
+    """
+
     try:
         return json.loads(data)
     except ValueError:
@@ -89,6 +114,10 @@ def json_loads(data):
 
 
 def main():
+    """
+    Run everything
+    """
+
     p = argparse.ArgumentParser()
     p.add_argument('-f', '--sort-by', type=str)
     p.add_argument('-r', '--sort-reversed', action='store_true')
