@@ -89,6 +89,8 @@ def main():
     p.add_argument('-r', '--sort-reversed', action='store_true')
     p.add_argument('-g', '--grep', action='append')
     p.add_argument('-v', '--version', action='store_true')
+    p.add_argument('--sort-keys', action='store_true')
+    p.add_argument('--indent', type=int)
     # p.add_argument('-l', '--highlight', type=str)
     args = p.parse_args()
 
@@ -104,7 +106,7 @@ def main():
         data.sort(key=lambda item: item[args.sort_by], reverse=args.sort_reversed)
 
     for line in data:
-        line = json.dumps(line)
+        line = json.dumps(line, sort_keys=args.sort_keys, indent=args.indent)
         print_colorized(line)
 
 
