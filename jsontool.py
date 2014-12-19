@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """ jsontool - Perform some actions with json using CLI
-    http://github.com/mysz/jsontool
+    http://mysz.github.io/jsontool
     Author: Marcin Sztolcman (marcin@urzenia.net)
 
     Get help with: jsontool --help
