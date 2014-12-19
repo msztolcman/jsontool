@@ -18,6 +18,7 @@ import argparse
 import json
 import os.path
 import sys
+import textwrap
 
 
 def show_version():
@@ -113,12 +114,41 @@ def json_loads(data):
         pass
 
 
+def wrap_text(txt):
+    """
+    Make custom wrapper for passed text.
+    Splits given text for lines, and for every line apply custom
+    textwrap.TextWrapper settings, then return reformatted string.
+    """
+
+    _wrap = textwrap.TextWrapper(
+        width = 72,
+        expand_tabs = True,
+        replace_whitespace = False,
+        drop_whitespace = True,
+        subsequent_indent = '  ',
+    )
+    txt = [_wrap.fill(line) for line in txt.splitlines()]
+    return "\n".join(txt)
+
+
 def main():
     """
     Run everything
     """
 
-    p = argparse.ArgumentParser()
+    epilog = "Argument to --grep option should be in format:\n" \
+             "  field:value:modifier\n" \
+             "Where: \n" \
+             "- \"field\" must be in all JSONs. \n" \
+             "- \"value\" is value to search \n" \
+             "- \"modifier\" is optional, and say how to treat \"value\": allowed \n" \
+             "  options are: s (string - default), b (boolean), i (integer), f (float)"
+
+    p = argparse.ArgumentParser(
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog=epilog
+    )
     p.add_argument('-f', '--sort-by', type=str,
         help='sort given list of JSONs by this field')
     p.add_argument('-r', '--sort-reversed', action='store_true',
