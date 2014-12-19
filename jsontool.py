@@ -1,10 +1,21 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+""" jsontool - Perform some actions with json using CLI
+    http://github.com/mysz/jsontool
+    Author: Marcin Sztolcman (marcin@urzenia.net)
+
+    Get help with: jsontool.py --help
+    Information about version: jsontool.py --version
+"""
+
 from __future__ import print_function, unicode_literals
+
+__version__ = '0.1.0'
 
 import argparse
 import json
+import os.path
 import sys
 
 try:
@@ -23,6 +34,14 @@ try:
 except ImportError as e:
     def print_colorized(data, dst=sys.stdout):
         print(data, file=dst)
+
+
+def show_version():
+    """ Show version info and exit.
+    """
+
+    print('{0}: version {1}'.format(os.path.basename(sys.argv[0]), __version__))
+    sys.exit(0)
 
 
 def build_filters(filter_definitions):
@@ -51,8 +70,12 @@ def json_loads(data):
 p = argparse.ArgumentParser()
 p.add_argument('-f', '--field', type=str)
 p.add_argument('-g', '--grep', action='append')
+p.add_argument('-v', '--version', action='store_true')
 # p.add_argument('-l', '--highlight', type=str)
 args = p.parse_args()
+
+if args.version:
+    show_version()
 
 filters = build_filters(args.grep)
 
