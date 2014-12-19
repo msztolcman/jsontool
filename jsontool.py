@@ -69,22 +69,27 @@ def json_loads(data):
         pass
 
 
-p = argparse.ArgumentParser()
-p.add_argument('-f', '--field', type=str)
-p.add_argument('-g', '--grep', action='append')
-p.add_argument('-v', '--version', action='store_true')
-# p.add_argument('-l', '--highlight', type=str)
-args = p.parse_args()
+def main():
+    p = argparse.ArgumentParser()
+    p.add_argument('-f', '--field', type=str)
+    p.add_argument('-g', '--grep', action='append')
+    p.add_argument('-v', '--version', action='store_true')
+    # p.add_argument('-l', '--highlight', type=str)
+    args = p.parse_args()
 
-if args.version:
-    show_version()
+    if args.version:
+        show_version()
 
-filters = build_filters(args.grep)
+    filters = build_filters(args.grep)
 
-data = map(json_loads, sys.stdin)
-data = filter(filters, data)
-data.sort(key=lambda item: item[args.field])
+    data = map(json_loads, sys.stdin)
+    data = filter(filters, data)
+    data.sort(key=lambda item: item[args.field])
 
-for line in data:
-    line = json.dumps(line)
-    print_colorized(line)
+    for line in data:
+        line = json.dumps(line)
+        print_colorized(line)
+
+
+if __name__ == '__main__':
+    main()
