@@ -52,9 +52,23 @@ def build_filters(filter_definitions):
     if not filter_definitions:
         return lambda item: bool(item)
 
+    modifiers = {
+        'i': int,
+        'f': float,
+        's': str,
+        'b': bool,
+    }
     for definition in filter_definitions:
-        key, value = definition.split(':', 1)
-        filters.append(lambda data: key in data and data[key] == value)
+        try:
+            key, value, modifier = definition.split(':', 2)
+            modifier = modifiers.get(modifier, None)
+        except ValueError:
+            key, value = definition.split(':', 1)
+            modifier = str
+
+        if not modifier:
+            modifier = lambda item: item
+        filters.append(lambda data: key in data and data[key] == modifier(value))
 
     def _filter(item):
         return item and all(flt(item) for flt in filters)
