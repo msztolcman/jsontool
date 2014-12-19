@@ -1,6 +1,7 @@
 /venv
 /data1.json
 /data2.json
+/.idea
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
