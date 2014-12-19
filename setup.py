@@ -9,7 +9,7 @@ with open(path.join(BASE_DIR, 'README.md'), encoding='utf-8') as f:
 
 setup(
     name='jsontool',
-    version='0.1.0',
+    version='0.2.0',
     description='`jsontool` is utility to fighting with JSON files using CLI',
     long_description=long_description,
     url='http://github.com/mysz/jsontool/',
