@@ -12,7 +12,7 @@ setup(
     version='0.2.1',
     description='`jsontool` is utility to fighting with JSON files using CLI',
     long_description=long_description,
-    url='http://github.com/mysz/jsontool/',
+    url='http://mysz.github.io/jsontool/',
     author='Marcin Sztolcman',
     author_email='marcin@urzenia.net',
     license='MIT',
