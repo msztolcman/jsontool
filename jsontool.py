@@ -5,8 +5,8 @@
     http://github.com/mysz/jsontool
     Author: Marcin Sztolcman (marcin@urzenia.net)
 
-    Get help with: jsontool.py --help
-    Information about version: jsontool.py --version
+    Get help with: jsontool --help
+    Information about version: jsontool --version
 """
 
 from __future__ import print_function, unicode_literals
