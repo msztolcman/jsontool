@@ -85,7 +85,7 @@ def json_loads(data):
 
 def main():
     p = argparse.ArgumentParser()
-    p.add_argument('-f', '--field', type=str)
+    p.add_argument('-f', '--sort-by', type=str)
     p.add_argument('-g', '--grep', action='append')
     p.add_argument('-v', '--version', action='store_true')
     # p.add_argument('-l', '--highlight', type=str)
@@ -98,7 +98,7 @@ def main():
 
     data = map(json_loads, sys.stdin)
     data = filter(filters, data)
-    data.sort(key=lambda item: item[args.field])
+    data.sort(key=lambda item: item[args.sort_by])
 
     for line in data:
         line = json.dumps(line)
