@@ -119,13 +119,20 @@ def main():
     """
 
     p = argparse.ArgumentParser()
-    p.add_argument('-f', '--sort-by', type=str)
-    p.add_argument('-r', '--sort-reversed', action='store_true')
-    p.add_argument('-g', '--grep', action='append')
-    p.add_argument('-v', '--version', action='store_true')
-    p.add_argument('--sort-keys', action='store_true')
-    p.add_argument('--indent', type=int)
-    p.add_argument('--color', type=str, choices=('auto', 'always', 'never'), default='auto')
+    p.add_argument('-f', '--sort-by', type=str,
+        help='sort given list of JSONs by this field')
+    p.add_argument('-r', '--sort-reversed', action='store_true',
+        help='sort in reverse order')
+    p.add_argument('-g', '--grep', action='append',
+        help='filter list of JSONs using this rules (can be added more then once)')
+    p.add_argument('-v', '--version', action='store_true',
+        help='show version and exit')
+    p.add_argument('--sort-keys', action='store_true',
+        help='sort keys in printed JSONs (default: not sorted)')
+    p.add_argument('--indent', type=int,
+        help='indent JSONs with INDENT spaces')
+    p.add_argument('--color', type=str, choices=('auto', 'always', 'never'), default='auto',
+        help='manipulate colorizing of JSONs (default: auto)')
     args = p.parse_args()
 
     if args.version:
