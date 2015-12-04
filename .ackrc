@@ -1,0 +1,11 @@
+--ignore-dir=venv
+--ignore-dir=venv-2
+--ignore-dir=venv-27
+--ignore-dir=venv-3
+--ignore-dir=venv-33
+--ignore-dir=venv-34
+--ignore-dir=.idea
+--ignore-dir=.tox
+--ignore-dir=jsontool.egg-info
+--ignore-dir=data
+--ignore-dir=build
