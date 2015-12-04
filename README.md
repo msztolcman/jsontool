@@ -52,15 +52,15 @@ To install, simply use `pip`:
 
     pip install jsontool
 
-If you do not want to use `pip` tool, then go to [GitHub releases](https://github.com/mysz/jsontool/releases), download newest release, unpack and put somewhere in `PATH` (ie. `~/bin` or `/usr/local/bin`).
+If you do not want to use `pip` tool, then go to [GitHub releases](https://github.com/msztolcman/jsontool/releases), download newest release, unpack and put somewhere in `PATH` (ie. `~/bin` or `/usr/local/bin`).
 
 If You want to install newest unstable version, then just copy file to your PATH, for example:
 
-    curl https://raw.github.com/mysz/jsontool/master/jsontool.py > /usr/local/bin/jsontool
+    curl https://raw.github.com/msztolcman/jsontool/master/jsontool.py > /usr/local/bin/jsontool
 
 or:
 
-    wget https://raw.github.com/mysz/jsontool/master/jsontool.py -O /usr/local/bin/jsontool
+    wget https://raw.github.com/msztolcman/jsontool/master/jsontool.py -O /usr/local/bin/jsontool
 
 Voila!
 
@@ -74,7 +74,7 @@ Contact
 
 If you like or dislike this software, please do not hesitate to tell me about this me via email (marcin@urzenia.net).
 
-If you find bug or have an idea to enhance this tool, please use GitHub's [issues](https://github.com/mysz/jsontool/issues).
+If you find bug or have an idea to enhance this tool, please use GitHub's [issues](https://github.com/msztolcman/jsontool/issues).
 
 License
 -------
