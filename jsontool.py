@@ -13,6 +13,8 @@ from __future__ import print_function, unicode_literals
 
 __version__ = '0.2.1'
 
+import re
+
 
 import argparse
 import json
@@ -31,7 +33,7 @@ def show_version():
     sys.exit(0)
 
 
-def build_filters(filter_definitions):
+def build_filters(filter_definitions, invert=False):
     """
     Build function to filter jsons.
 
@@ -45,23 +47,66 @@ def build_filters(filter_definitions):
     if not filter_definitions:
         return lambda item: bool(item)
 
-    modifiers = {
+    value_modifiers = {
+        'i': int,
+        'f': float,
+        's': str,
+        'b': bool,
+        'l': str.lower,
+        'u': str.upper,
+        'n': str.lower,
+    }
+    search_token_modifiers = {
+        'n': str.lower,
         'i': int,
         'f': float,
         's': str,
         'b': bool,
     }
-    for definition in filter_definitions:
-        try:
-            key, value, modifier = definition.split(':', 2)
-            modifier = modifiers.get(modifier, None)
-        except ValueError:
-            key, value = definition.split(':', 1)
-            modifier = str
 
-        if not modifier:
-            modifier = lambda item: item
-        filters.append(lambda data: key in data and data[key] == modifier(value))
+    rxp = re.compile(r'''
+        ^
+            ([^:]+?)            # field
+            ([=%^$<>])?         # matcher
+            :
+            (.*?)               # data
+            (?::([ifsblun]))?   # search token modifier
+        $
+    ''', re.VERBOSE)
+
+    for definition in filter_definitions:
+        m = rxp.search(definition)
+        if not m:
+            raise ValueError("Invalid filter: %s" % definition)
+
+        field, matcher, search_token, value_modifier = m.groups(definition)
+        search_token_modifier = search_token_modifiers.get(value_modifier, str)
+        value_modifier = value_modifiers.get(value_modifier, str)
+
+        if 0:
+            def _debug(data):
+                print(field, data[field], search_token, value_modifier(search_token), data)
+                return True
+            filters.append(_debug)
+
+        search_token = search_token_modifier(search_token)
+        if matcher == '%':
+            filter_lambda = lambda data: field in data and search_token in value_modifier(data[field])
+        elif matcher == '^':
+            filter_lambda = lambda data: field in data and value_modifier(data[field]).startswith(search_token)
+        elif matcher == '$':
+            filter_lambda = lambda data: field in data and value_modifier(data[field]).endswith(search_token)
+        elif matcher == '<':
+            filter_lambda = lambda data: field in data and search_token > value_modifier(data[field])
+        elif matcher == '>':
+            filter_lambda = lambda data: field in data and search_token < value_modifier(data[field])
+        else:
+            filter_lambda = lambda data: field in data and search_token == value_modifier(data[field])
+
+        if invert:
+            filters.append(lambda data: not filter_lambda(data))
+        else:
+            filters.append(filter_lambda)
 
     def _filter(item):
         return item and all(flt(item) for flt in filters)
@@ -155,7 +200,9 @@ def main():
         help='sort in reverse order')
     p.add_argument('-g', '--grep', action='append',
         help='filter list of JSONs using this rules (can be added more then once)')
-    p.add_argument('-v', '--version', action='store_true',
+    p.add_argument('-v', '--invert-match', dest='grep_inverted', action='store_true',
+        help='')
+    p.add_argument('--version', action='store_true',
         help='show version and exit')
     p.add_argument('--sort-keys', action='store_true',
         help='sort keys in printed JSONs (default: not sorted)')
@@ -168,7 +215,7 @@ def main():
     if args.version:
         show_version()
 
-    filters = build_filters(args.grep)
+    filters = build_filters(args.grep, args.grep_inverted)
     printer = get_printer(args.color)
 
     data = map(json_loads, sys.stdin)
